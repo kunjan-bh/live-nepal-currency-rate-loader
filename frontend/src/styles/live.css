@@ -27,12 +27,16 @@
   font-size: 36px;
   font-weight: 700;
   color: #0f172a;
+  text-align: center;
+  width: 100%;
 }
 
 .source-filter {
   display: flex;
   gap: 16px;
   margin-top: 12px;
+  width: 100%;
+  justify-content: center;
 }
 
 .source-filter button {

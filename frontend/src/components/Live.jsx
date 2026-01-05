@@ -26,7 +26,7 @@ const FLAGS = {
 };
 
 const Live = () => {
-  const [selectedSource, setSelectedSource] = useState("XE.com");
+  const [selectedSource, setSelectedSource] = useState("");
   const [nrbRates, setNrbRates] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -106,7 +106,7 @@ const Live = () => {
 
           {selectedSource === "NRB" && (
             <div style={{ marginBottom: "12px", color: "#0f766e", fontWeight: 500 }}>
-              NRB rates update once per day. Automatically fetched.
+              NRB rates update once per day. Automatically fetched. <span style={{ color: "#f84343ff", fontWeight: 500 }}>Use other source for live update (in 30 min each)</span>
             </div>
           )}
 
