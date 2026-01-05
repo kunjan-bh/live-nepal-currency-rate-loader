@@ -1,0 +1,67 @@
+.about-us {
+  background: #f8fafc;
+  padding: 80px 0;
+  display: flex;
+  justify-content: center; /* Center the container horizontally */
+}
+
+.about-container {
+  width: 100%;
+  max-width: 900px; /* Limit width for readability */
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  align-items: center; /* Center all children */
+  text-align: center;  /* Center text inside */
+}
+
+/* Header */
+.about-header h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
+.about-header p {
+  font-size: 16px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* Cards section */
+.about-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  width: 100%; /* Make sure cards don’t overflow */
+  justify-items: center; /* Center each card inside its grid cell */
+}
+
+.card {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  max-width: 280px; /* Prevent card from stretching */
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+
+.card p {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
+}

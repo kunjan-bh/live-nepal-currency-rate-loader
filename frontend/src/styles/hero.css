@@ -1,0 +1,186 @@
+.hero {
+  background: linear-gradient(180deg, #f8fafc, #ffffff);
+  margin-bottom: 30px;
+}
+
+.hero-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+  gap: 60px;
+}
+
+/* Left content */
+.hero-content h1 {
+  font-size: 44px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 16px 0;
+}
+
+.hero-content h1 span {
+  color: #0f766e;
+}
+
+.hero-content p {
+  font-size: 16px;
+  color: #475569;
+  max-width: 480px;
+  margin-bottom: 32px;
+}
+
+.hero-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: #e6f5f3;
+  color: #0f766e;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 999px;
+}
+
+/* Buttons */
+.hero-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.btn-primary {
+  background: #0f766e;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(15, 118, 110, 0.25);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #0f766e;
+  padding: 12px 22px;
+  border-radius: 8px;
+  border: 1px solid #0f766e;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: #e6f5f3;
+}
+
+/* Right visual */
+.hero-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.rate-card {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  width: 260px;
+  text-align: center;
+}
+
+.rate-card h3 {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.rate {
+  font-size: 36px;
+  font-weight: 700;
+  color: #0f766e;
+}
+
+.rate-status {
+  font-size: 12px;
+  color: #22c55e;
+}
+.currency-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.currency-item {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.currency-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Tooltip */
+/* Tooltip */
+.currency-item::after {
+  content: attr(data-name);
+  position: absolute;
+  bottom: 72px; /* ABOVE the icon */
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  background: #0f172a;
+  color: white;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 10;
+}
+
+/* Tooltip arrow */
+.currency-item::before {
+  content: "";
+  position: absolute;
+  bottom: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #0f172a transparent transparent transparent;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 9;
+}
+
+.currency-item:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.currency-item:hover::before {
+  opacity: 1;
+}
+
+

@@ -1,0 +1,14 @@
+.platform {
+    background: linear-gradient(180deg, #f8fafc, #ffffff);
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+    min-width: 100vw;
+    
+}
+.container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+}
