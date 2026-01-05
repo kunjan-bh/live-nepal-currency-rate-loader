@@ -1,0 +1,113 @@
+* {
+  box-sizing: border-box;
+}
+
+.live-section {
+  background: #f8fafc;
+  padding: 100px 0;
+}
+
+.live-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px; /* more space between header and grid */
+}
+
+.live-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.live-header h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.source-filter {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.source-filter button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid #0f766e;
+  background: transparent;
+  color: #0f766e;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.source-filter button.active,
+.source-filter button:hover {
+  background: #0f766e;
+  color: white;
+  box-shadow: 0 6px 16px rgba(15, 118, 110, 0.2);
+}
+
+.rates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 32px; /* more gap between cards */
+}
+
+.rate-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* space between sections inside card */
+}
+
+.rate-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
+}
+
+.rate-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px; /* bigger space between flag and name */
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.flag {
+  font-size: 32px;
+}
+
+.rate-values {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* space between NPR→Cur and Cur→NPR */
+  margin-bottom: 8px;
+}
+
+.rate-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #f1f5f9; /* light grey background for separation */
+  font-weight: 500;
+  color: #0f766e;
+}
+
+.rate-status {
+  font-size: 12px;
+  color: #22c55e;
+}

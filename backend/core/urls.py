@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from forex.views import nrb_rates
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('nrb_rates/', nrb_rates, name='nrb_rates'),
 ]
