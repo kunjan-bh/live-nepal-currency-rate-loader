@@ -1,96 +1,96 @@
 import { useState, useEffect } from "react";
 
 const API_URL = "http://localhost:8000";
-const currencies = [
-    { code: "USD", name: "US Dollar", flag: "🇺🇸" },
-    { code: "EUR", name: "Euro", flag: "🇪🇺" },
-    { code: "GBP", name: "British Pound", flag: "🇬🇧" },
-    { code: "JPY", name: "Japanese Yen", flag: "🇯🇵" },
-    { code: "AUD", name: "Australian Dollar", flag: "🇦🇺" },
-    { code: "CAD", name: "Canadian Dollar", flag: "🇨🇦" },
-    { code: "CNY", name: "Chinese Yuan", flag: "🇨🇳" },
-    { code: "INR", name: "Indian Rupee", flag: "🇮🇳" },
-];
 
 const FLAGS = {
-    USD: "🇺🇸",
-    EUR: "🇪🇺",
-    GBP: "🇬🇧",
-    JPY: "🇯🇵",
-    AUD: "🇦🇺",
-    CAD: "🇨🇦",
-    CNY: "🇨🇳",
-    INR: "🇮🇳",
+  USD: "🇺🇸",
+  EUR: "🇪🇺",
+  GBP: "🇬🇧",
+  JPY: "🇯🇵",
+  AUD: "🇦🇺",
+  CAD: "🇨🇦",
+  CNY: "🇨🇳",
+  INR: "🇮🇳",
 };
 
 const NrbRates = () => {
-    const [nrbRates, setNrbRates] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+  const [rates, setRates] = useState([]);
+  const [lastUpdated, setLastUpdated] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    const fetchNRBRates = async () => {
-        setLoading(true);
-        try {
-            const res = await fetch(`${API_URL}/nrb_rates/`);
-            const data = await res.json();
-            console.log("NRB API Response:", data);
-            if (data.success) {
-                setNrbRates(
-                    data.rates.map((cur) => ({
-                        ...cur,
-                        flag: FLAGS[cur.code],
-                        nprToCur: cur.buy ? (cur.unit / parseFloat(cur.buy)).toFixed(2) : "-",
-                        curToNpr: cur.sell ? parseFloat(cur.sell).toFixed(2) : "-",
-                    }))
-                );
-            }
-        } catch (err) {
-            console.error("NRB fetch error:", err);
+  useEffect(() => {
+    const fetchRates = async () => {
+      try {
+        const res = await fetch(`${API_URL}/nrb_rates/`);
+        const data = await res.json();
+
+        if (!data.success) {
+          throw new Error(data.message || "Failed to load NRB rates");
         }
-        if (nrbRates.length === 0) {
-            setError('No rates fetched yet.');
-        }
+
+        setRates(
+            data.rates.map((cur) => {
+                const nprToCur = 1 / (cur.buy / cur.unit);  // 1 NPR → Foreign
+                const curToNpr = cur.sell / cur.unit;      // 1 unit Foreign → NPR
+                return {
+                ...cur,
+                flag: FLAGS[cur.code],
+                nprToCur: nprToCur < 0.01 ? nprToCur.toFixed(6) : nprToCur.toFixed(4),
+                curToNpr: curToNpr.toFixed(2),
+                };
+            })
+        );
+
+
+
+
+        setLastUpdated(data.last_updated);
+      } catch (err) {
+        setError(err.message);
+      } finally {
         setLoading(false);
+      }
     };
 
-    useEffect(() => {
-        if (nrbRates.length === 0) fetchNRBRates();
-    }, []);
+    fetchRates();
+  }, []);
 
-    if (loading) return <p>Loading NRB rates...</p>;
+  if (loading) return <p>Loading NRB rates…</p>;
+  if (error) return <p style={{ color: "#f84343" }}>{error}</p>;
 
+  return (
+    <>
+      <p style={{ marginBottom: "12px", fontWeight: 500 }}>
+        Last updated: {lastUpdated}
+      </p>
 
-    return (
-        <>
-            {loading && <p>Loading NRB rates...</p>}
-            {error && <p style={{ color: "#f84343ff", fontWeight: 500 }}>{error}</p>}
-            <div className="rates-grid">
-                {nrbRates.map((cur) => (
-                    <div className="rate-card" key={cur.code}>
-                        <div className="rate-header">
-                            <span className="flag">{cur.flag}</span>
-                            <span className="currency-name">{cur.name}</span>
-                            <span className="currency-code">{cur.code}</span>
-                        </div>
-
-                        <div className="rate-values">
-                            <div className="rate-row">
-                                <span>NPR → {cur.code}</span>
-                                <span>{cur.nprToCur}</span>
-                            </div>
-                            <div className="rate-row">
-                                <span>{cur.code} → NPR</span>
-                                <span>{cur.curToNpr}</span>
-                            </div>
-                            {cur.date && <div className="rate-date">Date: {cur.date}</div>}
-                        </div>
-
-                        <div className="rate-status">Official Daily Rate</div>
-                    </div>
-                ))}
+      <div className="rates-grid">
+        {rates.map((cur) => (
+          <div className="rate-card" key={cur.code}>
+            <div className="rate-header">
+              <span className="flag">{cur.flag}</span>
+              <span className="currency-name">{cur.name}</span>
+              <span className="currency-code">{cur.code}</span>
             </div>
-        </>
-    );
+
+            <div className="rate-values">
+              <div className="rate-row">
+                <span>NPR → {cur.code}</span>
+                <span>{cur.nprToCur}</span>
+              </div>
+              <div className="rate-row">
+                <span>{cur.code} → NPR</span>
+                <span>{cur.curToNpr}</span>
+              </div>
+            </div>
+
+            <div className="rate-status">Official NRB Rate</div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
 };
 
 export default NrbRates;
