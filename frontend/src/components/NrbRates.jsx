@@ -42,12 +42,11 @@ const NrbRates = () => {
             })
         );
 
-
-
-
         setLastUpdated(data.last_updated);
+        console.log(`Successfully loaded NRB rates (cached: ${data.cached || false}).`);
       } catch (err) {
         setError(err.message);
+        console.error(`Error fetching NRB rates: ${err.message}. Showing error message.`);
       } finally {
         setLoading(false);
       }

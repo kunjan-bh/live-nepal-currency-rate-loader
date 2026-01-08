@@ -43,8 +43,9 @@ const CurrencyFreak = () => {
         });
 
       setRates(filteredRates);
+      console.log(`Successfully loaded CurrencyFreaks rates (cached: ${data.cached || false}).`);
     } catch (err) {
-      console.error("Fetch failed, showing cached rates");
+      console.error(`Error fetching CurrencyFreaks rates: ${err.message}. Showing cached rates if available.`);
       // ❗ Do nothing → last rates remain visible
     } finally {
       setLoading(false);

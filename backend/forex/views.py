@@ -19,20 +19,37 @@ CURRENCIES = ["USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CNY", "INR"]
 def nrb_rates(request):
     headers = {"User-Agent": "Mozilla/5.0"}
     today = datetime.now().date()
+    today_str = today.strftime("%Y-%m-%d")
 
+    # 1️⃣ Check if today's rates already exist in DB
+    if NRBRate.objects.filter(date=today).exists():
+        print(f"Using cached NRB rates from DB for {today_str} (already fetched today).")
+        last_saved = NRBRate.objects.filter(date=today)
+        filtered = [
+            {
+                "code": rate.code,
+                "name": rate.name,
+                "unit": rate.unit,
+                "buy": rate.buy,
+                "sell": rate.sell,
+                "date": rate.date
+            }
+            for rate in last_saved
+        ]
+        return Response({"success": True, "last_updated": filtered[0]["date"], "rates": filtered, "cached": True})
+
+    # 2️⃣ No today's rates: Fetch new data
+    print(f"Fetching new NRB rates for {today_str}...")
     try:
-        res = requests.get(NRB_API_URL+"?date=2026-01-08", headers=headers, timeout=10)
+        res = requests.get(f"{NRB_API_URL}?date={today_str}", headers=headers, timeout=10)
         res.raise_for_status()
         res_json = res.json()
         payload = res_json.get("data", {}).get("payload")
-        # print(payload)
-        published_date = payload.get("date") or today 
-        # print(published_date)
+        published_date = payload.get("date") or today_str
         rates_list = payload.get("rates", [])
-        print(payload)
 
-        if payload:
-            print("payload")
+        if payload and rates_list:
+            print(f"Successfully fetched NRB rates for {published_date}.")
             filtered = [
                 {
                     "code": cur["currency"]["iso3"],
@@ -40,14 +57,13 @@ def nrb_rates(request):
                     "unit": cur["currency"]["unit"],
                     "buy": float(cur["buy"]),
                     "sell": float(cur["sell"]),
-                    "date": published_date,   # use top-level date
+                    "date": published_date,
                 }
                 for cur in rates_list
                 if cur["currency"]["iso3"] in CURRENCIES
             ]
 
-
-            # 3️⃣ Save to DB
+            # Save to DB
             for rate in filtered:
                 NRBRate.objects.update_or_create(
                     code=rate["code"], date=rate["date"],
@@ -59,48 +75,35 @@ def nrb_rates(request):
                     }
                 )
 
-            return Response({"success": True, "last_updated": filtered[0]["date"], "rates": filtered})
+            return Response({"success": True, "last_updated": filtered[0]["date"], "rates": filtered, "cached": False})
 
         else:
-            # 4️⃣ No payload: fetch last saved rates from DB
-            last_saved = NRBRate.objects.filter(code__in=CURRENCIES).order_by('-date')
-            if not last_saved.exists():
-                return Response({"success": False, "message": "NRB rates not available yet"})
-
-            filtered = [
-                {
-                    "code": rate.code,
-                    "name": rate.name,
-                    "unit": rate.unit,
-                    "buy": rate.buy,
-                    "sell": rate.sell,
-                    "date": rate.date
-                }
-                for rate in last_saved
-            ]
-
-            return Response({"success": True, "last_updated": filtered[0]["date"], "rates": filtered})
+            print("No payload in NRB response, falling back to latest DB rates.")
+            raise Exception("No payload")
 
     except Exception as e:
-        # fallback to last saved rates if fetch fails
+        print(f"Error fetching NRB rates: {str(e)}. Falling back to latest DB rates.")
+        # Fallback to latest saved rates from DB
         last_saved = NRBRate.objects.filter(code__in=CURRENCIES).order_by('-date')
-        if last_saved.exists():
-            filtered = [
-                {
-                    "code": rate.code,
-                    "name": rate.name,
-                    "unit": rate.unit,
-                    "buy": rate.buy,
-                    "sell": rate.sell,
-                    "date": rate.date
-                }
-                for rate in last_saved
-            ]
-            return Response({"success": True, "last_updated": filtered[0]["date"], "rates": filtered})
-        
-        return Response({"success": False, "message": str(e)}, status=500)
+        if not last_saved.exists():
+            print("No NRB rates available in DB.")
+            return Response({"success": False, "message": "NRB rates not available yet"})
 
-
+        # Group by latest date (assume all codes have same latest date)
+        latest_date = last_saved.first().date
+        last_saved = last_saved.filter(date=latest_date)
+        filtered = [
+            {
+                "code": rate.code,
+                "name": rate.name,
+                "unit": rate.unit,
+                "buy": rate.buy,
+                "sell": rate.sell,
+                "date": rate.date
+            }
+            for rate in last_saved
+        ]
+        return Response({"success": True, "last_updated": filtered[0]["date"], "rates": filtered, "cached": True})
 
 
 @api_view(["GET"])
@@ -112,7 +115,7 @@ def currencyfreaks_rates(request):
     - If API fails: return cached data
     """
     try:
-        today = datetime.today().weekday()  # 0=Mon, 6=Sun
+        today_weekday = datetime.today().weekday()  # 0=Mon, 6=Sun
         now = timezone.now()
 
         # Always get latest record
@@ -122,10 +125,12 @@ def currencyfreaks_rates(request):
         if last_entry:
             last_fetched = last_entry.fetched_at
 
-            if today >= 5:  # Sat/Sun
+            if today_weekday >= 5:  # Sat/Sun
                 use_cached = True
+                print("Weekend: Using cached CurrencyFreaks data from DB.")
             elif now - last_fetched < timedelta(hours=1):
                 use_cached = True
+                print("Recent fetch (<1 hour): Using cached CurrencyFreaks data from DB.")
 
         if use_cached and last_entry:
             return Response({
@@ -137,6 +142,7 @@ def currencyfreaks_rates(request):
             })
 
         # Fetch new data
+        print("Fetching new data from CurrencyFreaks API...")
         if not API_KEY:
             raise Exception("API_KEY not set")
 
@@ -164,6 +170,7 @@ def currencyfreaks_rates(request):
                 })
 
         CurrencyRate.objects.create(data=filtered_rates)
+        print("Successfully fetched and saved new CurrencyFreaks rates.")
 
         return Response({
             "success": True,
@@ -173,6 +180,7 @@ def currencyfreaks_rates(request):
         })
 
     except Exception as e:
+        print(f"Error fetching CurrencyFreaks rates: {str(e)}. Falling back to cached data.")
         if last_entry:
             return Response({
                 "success": True,
@@ -183,6 +191,7 @@ def currencyfreaks_rates(request):
                 "last_updated": last_entry.fetched_at
             })
 
+        print("No CurrencyFreaks rates available in DB.")
         return Response({
             "success": False,
             "message": str(e)
