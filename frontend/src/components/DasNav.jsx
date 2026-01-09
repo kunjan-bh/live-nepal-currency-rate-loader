@@ -11,8 +11,8 @@ const DasNav = () => {
 
                 {/* Right: Navigation */}
                 <ul className="nav-right">
-                    <li><Link to="#Live">Live Rates</Link></li>
-                    <li><Link to="#about">About Us</Link></li>
+                    <li><a href="#Live">Live Rates</a></li>
+                    <li><a href="#about">About Us</a></li>
                 </ul>
             </div>
         </nav>

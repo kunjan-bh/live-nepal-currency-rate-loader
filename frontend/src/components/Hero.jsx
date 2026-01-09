@@ -18,7 +18,7 @@ const Hero = () => {
                     </p>
 
                     <div className="hero-actions">
-                        <button className="btn-primary"><Link to="#Live">View Live Rates</Link></button>
+                        <button className="btn-primary"><a href="#Live">View Live Rates</a></button>
                     </div>
                 </div>
 
