@@ -4,7 +4,7 @@
 
 .live-section {
   background: #f8fafc;
-  padding: 100px 0;
+  padding: 80px 0;
 }
 
 .live-container {
@@ -19,8 +19,98 @@
 .live-header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  /* gap: 12px; */
   align-items: flex-start;
+}
+
+.email-form {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  width: 100%;
+  max-width: 420px;
+  align-items: stretch;
+  justify-content: center;
+  gap: 5px;
+  color: #0f766e;
+  background: #ffffff;
+  box-shadow: rgba(99, 99, 99, 0.15) 0px 4px 12px;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 60px;
+}
+
+/* Heading */
+.email-form h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+/* Helper text */
+.email-form span {
+  font-size: 0.9rem;
+  color: #475569;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+/* Label */
+.email-form label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #0f766e;
+}
+
+/* Input */
+.email-form input {
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  outline: none;
+  color: #000000;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Focus state */
+.email-form input:focus {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+}
+
+/* Button */
+.email-form button {
+  margin-top: 12px;
+  padding: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  background-color: #0f766e;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* Hover */
+.email-form button:hover {
+  background-color: #115e59;
+}
+
+/* Click */
+.email-form button:active {
+  transform: scale(0.98);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .email-form {
+    padding: 18px;
+  }
 }
 
 .live-header h1 {
@@ -29,6 +119,7 @@
   color: #0f172a;
   text-align: center;
   width: 100%;
+  margin: 0 auto;
 }
 
 .source-filter {

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 const DasNav = () => {
     return (
         <nav className="dasNav">
@@ -10,9 +11,8 @@ const DasNav = () => {
 
                 {/* Right: Navigation */}
                 <ul className="nav-right">
-                    <li>Live Rates</li>
-                    <li>Exchange</li>
-                    <li>About Us</li>
+                    <li><Link to="#Live">Live Rates</Link></li>
+                    <li><Link to="#about">About Us</Link></li>
                 </ul>
             </div>
         </nav>

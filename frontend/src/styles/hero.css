@@ -58,6 +58,9 @@
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+.btn-primary a {
+  color: white;
+}
 
 .btn-primary:hover {
   transform: translateY(-1px);

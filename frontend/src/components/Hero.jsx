@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 const Hero = () => {
     return (
         <section className="hero">
@@ -17,8 +18,7 @@ const Hero = () => {
                     </p>
 
                     <div className="hero-actions">
-                        <button className="btn-primary">View Live Rates</button>
-                        <button className="btn-secondary">Exchange Calculator</button>
+                        <button className="btn-primary"><Link to="#Live">View Live Rates</Link></button>
                     </div>
                 </div>
 

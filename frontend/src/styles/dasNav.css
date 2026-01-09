@@ -55,8 +55,10 @@
   cursor: pointer;
   font-size: 15px;
   font-weight: 500;
-  color: #334155;
   transition: color 0.2s ease;
+}
+.nav-right li a {
+  color: #345533;
 }
 
 .nav-right li:hover {
