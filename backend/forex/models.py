@@ -30,3 +30,16 @@ class NRBRate(models.Model):
     
     class Meta:
         unique_together = ("code", "date")
+
+class LocalMetalRate(models.Model):
+    date = models.CharField(max_length=50)  # Nepali date or "Date not found"
+    fine_gold = models.IntegerField()
+    tejabi_gold = models.IntegerField(default=0)
+    silver = models.IntegerField()
+    fetched_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-fetched_at"]
+
+    def __str__(self):
+        return f"Local Metal Rate ({self.fetched_at.date()})"

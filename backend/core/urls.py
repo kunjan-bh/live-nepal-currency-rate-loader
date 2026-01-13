@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from forex.views import nrb_rates, currencyfreaks_rates
+from forex.views import nrb_rates, currencyfreaks_rates, fetch_fenegosida_rates
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('nrb_rates/', nrb_rates, name='nrb_rates'),
     path("currencyfreaks_rates/", currencyfreaks_rates),
+    path("local_metal_rate/", fetch_fenegosida_rates),
 ]

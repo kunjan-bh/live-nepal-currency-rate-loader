@@ -1,0 +1,85 @@
+.metal-container {
+    max-width: 480px;
+    margin: 40px auto;
+    padding: 24px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.metal-title {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #111;
+}
+
+.metal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.metal-buttons button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: #6b8b9d;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.metal-buttons button:hover {
+    background: #000000;
+}
+
+.metal-buttons button.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+.metal-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.metal-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 16px;
+}
+
+.metal-rates {
+    display: flex;
+    justify-content: space-between;
+}
+
+.metal-rates div {
+    text-align: left;
+}
+
+.metal-rates span {
+    display: block;
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.metal-rates strong {
+    font-size: 18px;
+    color: #111;
+}
+
+.metal-placeholder {
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+    padding: 20px;
+}
