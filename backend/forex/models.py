@@ -43,3 +43,17 @@ class LocalMetalRate(models.Model):
 
     def __str__(self):
         return f"Local Metal Rate ({self.fetched_at.date()})"
+
+class MetalRate(models.Model):
+    METAL_CHOICES = [
+        ('XAU', 'Gold'),
+        ('XAG', 'Silver'),
+    ]
+    
+    metal = models.CharField(max_length=3, choices=METAL_CHOICES)
+    currency = models.CharField(max_length=3, default='USD')
+    price_gram_usd = models.FloatField()  # Updated to store gram price in USD
+    fetched_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.metal} - {self.price_gram_usd} {self.currency} per gram at {self.fetched_at}"

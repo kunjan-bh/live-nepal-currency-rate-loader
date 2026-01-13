@@ -5,14 +5,38 @@ const LiveMetal = () => {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        if (rateType === "local") {
-            fetch("http://127.0.0.1:8000/local_metal_rate/")
-                .then((res) => res.json())
-                .then((res) => setData(res))
-                .catch(() => setData(null));
-        }
-        console.log(data);
+        const fetchRates = async () => {
+            try {
+                let res = await fetch(
+                    rateType === "local"
+                        ? "http://127.0.0.1:8000/local_metal_rate/"
+                        : "http://127.0.0.1:8000/metal_rates/"
+                );
+                let json = await res.json();
+
+                if (rateType === "live") {
+                    // Map backend keys to frontend keys
+                    if (!json.error && (json.gold || json.xag)) {
+                        json = {
+                            gold: json.gold?.price_tola_npr ?? null,
+                            silver: json.silver?.price_tola_npr ?? json.xag?.price_tola_npr ?? null
+                        };
+                    } else {
+                        console.error("Live metal API error or incomplete data:", json);
+                        throw new Error("Live metal data unavailable");
+                    }
+                }
+
+                setData(json);
+            } catch (err) {
+                console.error(err);
+                setData(null);
+            }
+        };
+
+        fetchRates();
     }, [rateType]);
+
 
     const today = new Date().toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -40,17 +64,19 @@ const LiveMetal = () => {
                 </button>
             </div>
 
-            {rateType === "local" && data && (
+            {data && (
                 <div className="metal-card">
                     <div className="metal-header">
                         <span className="metal-date">📅 {today}</span>
-                        <span className="metal-note">Updated once a day</span>
+                        <span className="metal-note">
+                            {rateType === "local" ? "Updated once a day" : "Updated every 8 hours"}
+                        </span>
                     </div>
 
                     <div className="metal-rates">
                         <div>
                             <span>Fine Gold/ 1 tola (12g)</span>
-                            <strong>Rs. {data.fine_gold}</strong>
+                            <strong>Rs. {rateType === "local" ? data.fine_gold : data.gold}</strong>
                         </div>
 
                         <div>
@@ -61,9 +87,9 @@ const LiveMetal = () => {
                 </div>
             )}
 
-            {rateType === "live" && (
+            {!data && rateType === "live" && (
                 <div className="metal-placeholder">
-                    Live metal prices coming soon...
+                    Unable to load live rates...
                 </div>
             )}
         </div>

@@ -9,6 +9,10 @@ from datetime import timedelta
 from django.utils import timezone
 from bs4 import BeautifulSoup
 import re
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import MetalRate
+from django.conf import settings
 
 
 NRB_API_URL = "https://www.nrb.org.np/api/forex/v1/rate"
@@ -344,3 +348,120 @@ def fetch_fenegosida_rates(request):
             {"success": False, "message": "Local metal rates not available"},
             status=500
         )
+
+def get_latest_usd_npr_rate(now=None):
+    if now is None:
+        now = timezone.now()
+    today = now.date()
+
+    today_rate = NRBRate.objects.filter(code="USD", date=today).first()
+    if today_rate:
+        print(f"Using today's USD/NPR sell rate: {today_rate.sell}")
+        return today_rate.sell
+
+    latest = NRBRate.objects.filter(code="USD").order_by('-date').first()
+    if latest:
+        age_days = (now.date() - latest.date).days
+        if age_days <= 7:
+            print(f"Using latest USD/NPR sell rate ({latest.date}, {age_days} days old): {latest.sell}")
+            return latest.sell
+        else:
+            print(f"Latest USD rate too old ({age_days} days): {latest.date}")
+    else:
+        print("No USD rate found in NRBRate table!")
+
+# metals/views.py
+
+GOLD_API_URL = "https://www.goldapi.io/api"
+GOLD_API_KEY = config("GOLD_API_KEY")  # Your key
+METALS = ["XAU", "XAG"]
+TOLA_GRAMS = 11.6638  # Standard tola weight in grams
+
+@api_view(["GET"])
+def get_metal_rates(request):
+    now = timezone.now()
+    usd_npr = get_latest_usd_npr_rate(now)
+
+    if usd_npr is None:
+        return Response(
+            {"error": "No recent USD/NPR rate found in NRB database"},
+            status=503
+        )
+
+    results = {
+        "gold": {"price_tola_npr": None, "fetched_at": None, "source": "cached"},
+        "silver": {"price_tola_npr": None, "fetched_at": None, "source": "cached"},
+    }
+
+    for metal in METALS:
+        metal_key = "gold" if metal == "XAU" else "silver"
+        last_rate = MetalRate.objects.filter(metal=metal).order_by('-fetched_at').first()
+
+        price_gram_usd = None
+        fetched_fresh = False
+
+        # Try to fetch fresh data if older than 8 hours or no data exists
+        if not last_rate or now - last_rate.fetched_at >= timedelta(hours=8):
+            try:
+                response = requests.get(
+                    f"{GOLD_API_URL}/{metal}/USD",
+                    headers={"x-access-token": GOLD_API_KEY},
+                    timeout=10
+                )
+                response.raise_for_status()
+                data = response.json()
+
+                # Debug: log full response once in a while (or always during dev)
+                print(f"DEBUG GoldAPI response for {metal}: {data}")
+
+                # Try multiple possible price fields (API inconsistency between XAU & XAG)
+                possible_keys = [
+                    "price_gram_24k",    # common for gold
+                    "price_gram",        # common for silver
+                    "price",             # fallback generic
+                    "price_per_gram",
+                    "gram_price"
+                ]
+
+                for key in possible_keys:
+                    val = data.get(key)
+                    if val is not None:
+                        try:
+                            price_gram_usd = float(val)
+                            print(f"Found price for {metal} using key '{key}': {price_gram_usd}")
+                            break
+                        except (ValueError, TypeError):
+                            continue
+
+                if price_gram_usd is not None:
+                    # Save fresh data
+                    MetalRate.objects.create(
+                        metal=metal,
+                        currency="USD",
+                        price_gram_usd=price_gram_usd
+                    )
+                    fetched_fresh = True
+                else:
+                    print(f"WARNING: No valid price found in API response for {metal}")
+
+            except Exception as e:
+                print(f"Error fetching {metal} from GoldAPI: {e}")
+                # will fallback to DB below
+
+        # If fresh fetch failed or no new price → use last known
+        if price_gram_usd is None and last_rate:
+            price_gram_usd = last_rate.price_gram_usd
+            print(f"Falling back to cached {metal_key} price: {price_gram_usd} USD/gram")
+
+        # Calculate final NPR price per tola
+        if price_gram_usd:
+            price_tola_npr = round(price_gram_usd * usd_npr * TOLA_GRAMS)
+            results[metal_key]["price_tola_npr"] = price_tola_npr
+            results[metal_key]["fetched_at"] = last_rate.fetched_at if last_rate else now
+            results[metal_key]["source"] = "fresh" if fetched_fresh else "cached"
+            results[metal_key]["usd_npr_used"] = round(usd_npr, 2)
+        else:
+            print(f"No usable price for {metal_key} after all fallbacks")
+
+    print("Final metal rates response:", results)
+    return Response(results)
