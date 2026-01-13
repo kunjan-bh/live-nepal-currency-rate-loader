@@ -378,7 +378,7 @@ METALS = ["XAU", "XAG"]
 TOLA_GRAMS = 11.6638  # Standard tola weight in grams
 
 @api_view(["GET"])
-def get_metal_rates(request):
+def get_metal_rates(request): #this is of goldapi.io
     now = timezone.now()
     usd_npr = get_latest_usd_npr_rate(now)
 
@@ -465,3 +465,22 @@ def get_metal_rates(request):
 
     print("Final metal rates response:", results)
     return Response(results)
+
+
+metal_api_base_url_v2 = "https://api.gold-api.com"
+
+@api_view(['GET'])
+def get_metal_rate_api(request): #this is og gold-api.com
+    date = timezone.now().date()
+    gold_symbol = "XAU"
+    silver_symbol = "XAG"
+    try:
+        res = requests.get(f"{metal_api_base_url_v2}/price/{gold_symbol}")
+        res2 = requests.get(f"{metal_api_base_url_v2}/price/{silver_symbol}")
+        data = res.json()
+        return Response(data)
+    except Exception as e:
+        print(f"Error fetching metal rate from GoldAPI: {e}")
+        return Response({"error": str(e)}, status=500)
+    
+    return Response({"error": "No metal rate found"}, status=404)

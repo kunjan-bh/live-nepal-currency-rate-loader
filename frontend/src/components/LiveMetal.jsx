@@ -60,7 +60,7 @@ const LiveMetal = () => {
                     className={rateType === "live" ? "active" : ""}
                     onClick={() => setRateType("live")}
                 >
-                    Live Frequent Updates
+                    Live Frequent Updates(goldapi.io)
                 </button>
             </div>
 
