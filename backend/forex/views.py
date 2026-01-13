@@ -4,14 +4,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from decouple import config
 from datetime import datetime
-from .models import CurrencyRate, NRBRate, LocalMetalRate
+from .models import CurrencyRate, NRBRate, LocalMetalRate, MetalRateTola_v2, MetalRate
 from datetime import timedelta
 from django.utils import timezone
 from bs4 import BeautifulSoup
 import re
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import MetalRate
 from django.conf import settings
 
 
@@ -473,26 +472,55 @@ metal_api_base_url_v2 = "https://api.gold-api.com"
 @api_view(['GET'])
 def get_metal_rate_api(request): #this is og gold-api.com
     date = timezone.now()
+    now = timezone.now()
     gold_symbol = "XAU"
     silver_symbol = "XAG"
+    last_rate = MetalRateTola_v2.objects.filter(metal=gold_symbol).order_by('-fetched_at').first()
+    fetched_fresh = False
     rate = NRBRate.objects.filter(code="USD", date=date).first()
     # print(rate)
     try:
-        res = requests.get(f"{metal_api_base_url_v2}/price/{gold_symbol}")
-        res2 = requests.get(f"{metal_api_base_url_v2}/price/{silver_symbol}")
-        data1 = res.json()
-        data2 = res2.json()
-        data_oz = {
-            "gold/oz": data1["price"],
-            "silver/oz": data2["price"],
-            "date": date
-        }
-        data_tola = {
-            "gold/tola": round((data1["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
-            "silver/tola": round((data2["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
-            "date": date
-        }
-        return Response(data_tola)
+        if not last_rate or now - last_rate.fetched_at >= timedelta(hours=1) or last_rate==None:
+            res = requests.get(f"{metal_api_base_url_v2}/price/{gold_symbol}")
+            res2 = requests.get(f"{metal_api_base_url_v2}/price/{silver_symbol}")
+            data1 = res.json()
+            data2 = res2.json()
+            data_oz = {
+                "gold/oz": data1["price"],
+                "silver/oz": data2["price"],
+                "date": date
+            }
+            data_tola = {
+                "gold/tola": round((data1["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
+                "silver/tola": round((data2["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
+                "date": date
+            }
+            MetalRateTola_v2.objects.update_or_create(
+                metal=gold_symbol,
+                defaults={
+                    "price_tola_npr": data_tola["gold/tola"],
+                    "fetched_at": date
+                }
+            )
+            MetalRateTola_v2.objects.update_or_create(
+                metal=silver_symbol,
+                defaults={
+                    "price_tola_npr": data_tola["silver/tola"],
+                    "fetched_at": date
+                }
+            ) 
+            return Response(data_tola)
+        else:
+            silver_last_price = MetalRateTola_v2.objects.filter(metal=silver_symbol).order_by('-fetched_at').first()
+            gold_last_price = MetalRateTola_v2.objects.filter(metal=gold_symbol).order_by('-fetched_at').first()
+            if not gold_last_price or not silver_last_price:
+                return Response({"error": "No cached metal rate found"}, status=404)
+            data_tola = {
+                "gold/tola": gold_last_price.price_tola_npr,
+                "silver/tola": silver_last_price.price_tola_npr,
+                "date": date
+            }
+            return Response(data_tola)
     except Exception as e:
         print(f"Error fetching metal rate from GoldAPI: {e}")
         return Response({"error": str(e)}, status=500)

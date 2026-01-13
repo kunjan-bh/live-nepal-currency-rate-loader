@@ -44,7 +44,7 @@ class LocalMetalRate(models.Model):
     def __str__(self):
         return f"Local Metal Rate ({self.fetched_at.date()})"
 
-class MetalRate(models.Model):
+class MetalRate(models.Model):# to save of the (goldapi.io)
     METAL_CHOICES = [
         ('XAU', 'Gold'),
         ('XAG', 'Silver'),
@@ -57,3 +57,17 @@ class MetalRate(models.Model):
     
     def __str__(self):
         return f"{self.metal} - {self.price_gram_usd} {self.currency} per gram at {self.fetched_at}"
+
+class MetalRateTola_v2(models.Model):# to save of the (gold-api.com)
+    METAL_CHOICES = [
+        ('XAU', 'Gold'),
+        ('XAG', 'Silver'),
+    ]
+    
+    metal = models.CharField(max_length=3, choices=METAL_CHOICES)
+    currency = models.CharField(max_length=3, default='USD')
+    price_tola_npr = models.FloatField()  # Updated to store gram price in USD
+    fetched_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.metal} - {self.price_tola_npr} {self.currency} per gram at {self.fetched_at}"
