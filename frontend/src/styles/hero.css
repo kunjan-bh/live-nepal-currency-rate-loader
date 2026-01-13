@@ -10,6 +10,8 @@
   grid-template-columns: 1.2fr 1fr;
   align-items: center;
   gap: 60px;
+  /* min-width: none; */
+  min-height: 400px;
 }
 
 /* Left content */

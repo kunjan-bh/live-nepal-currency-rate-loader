@@ -5,16 +5,15 @@ const Hero = () => {
             <div className="hero-container">
                 {/* Left content */}
                 <div className="hero-content">
-                    <span className="hero-badge">🇳🇵 Live Currency Updates</span>
+                    <span className="hero-badge">🇳🇵 Live Currency & Gold/Silver Updates</span>
 
                     <h1>
                         Real-Time Nepal <br />
-                        <span>Currency Exchange Rates</span>
+                        <span>Currency & Gold/Silver</span>
                     </h1>
 
                     <p>
-                        Track live foreign exchange rates in Nepal with accurate,
-                        up-to-date data. Simple, fast, and reliable.
+                        Track live foreign exchange rates, gold (hallmark), and silver prices in Nepal. Accurate, fast, and always up-to-date — trusted by thousands daily.
                     </p>
 
                     <div className="hero-actions">
