@@ -376,6 +376,7 @@ GOLD_API_URL = "https://www.goldapi.io/api"
 GOLD_API_KEY = config("GOLD_API_KEY")  # Your key
 METALS = ["XAU", "XAG"]
 TOLA_GRAMS = 11.6638  # Standard tola weight in grams
+OZ_TO_GRAMS = 28.3495
 
 @api_view(["GET"])
 def get_metal_rates(request): #this is of goldapi.io
@@ -471,14 +472,27 @@ metal_api_base_url_v2 = "https://api.gold-api.com"
 
 @api_view(['GET'])
 def get_metal_rate_api(request): #this is og gold-api.com
-    date = timezone.now().date()
+    date = timezone.now()
     gold_symbol = "XAU"
     silver_symbol = "XAG"
+    rate = NRBRate.objects.filter(code="USD", date=date).first()
+    # print(rate)
     try:
         res = requests.get(f"{metal_api_base_url_v2}/price/{gold_symbol}")
         res2 = requests.get(f"{metal_api_base_url_v2}/price/{silver_symbol}")
-        data = res.json()
-        return Response(data)
+        data1 = res.json()
+        data2 = res2.json()
+        data_oz = {
+            "gold/oz": data1["price"],
+            "silver/oz": data2["price"],
+            "date": date
+        }
+        data_tola = {
+            "gold/tola": round((data1["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
+            "silver/tola": round((data2["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
+            "date": date
+        }
+        return Response(data_tola)
     except Exception as e:
         print(f"Error fetching metal rate from GoldAPI: {e}")
         return Response({"error": str(e)}, status=500)
