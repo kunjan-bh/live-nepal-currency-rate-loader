@@ -3,7 +3,6 @@
 }
 
 .live-section {
-  background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%);
   border-radius: 24px;
   padding: 80px 0;
 }
@@ -22,6 +21,12 @@
   flex-direction: column;
   /* gap: 12px; */
   align-items: flex-start;
+}
+.live-header .info{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 .live-section p{
   color: rgb(67, 136, 248);

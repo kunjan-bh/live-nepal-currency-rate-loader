@@ -519,7 +519,7 @@ def get_metal_rate_api(request): #this is og gold-api.com
             data_tola = {
                 "gold_tola": gold_last_price.price_tola_npr,
                 "silver_tola": silver_last_price.price_tola_npr,
-                "date": date
+                "date": gold_last_price.fetched_at
             }
             return Response(data_tola)
     except Exception as e:

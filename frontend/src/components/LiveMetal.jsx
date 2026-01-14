@@ -34,6 +34,7 @@ const LiveMetal = () => {
                         mapped = {
                             gold: json.gold_tola ?? null,
                             silver: json.silver_tola ?? json.xag_tola ?? null,
+                            date: json.date ?? null,
                         };
                     }
                 }

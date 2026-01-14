@@ -14,7 +14,6 @@ const DasNav = () => {
                     <li><a href="#Live">Live Currency Rates</a></li>
                     <li><a href="#Metal">Live Gold Rates</a></li>
                     <li><a href="#Metal">Live Silver Rates</a></li>
-                    <li><a href="#about">About Us</a></li>
                 </ul>
             </div>
         </nav>

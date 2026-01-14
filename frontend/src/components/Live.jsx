@@ -13,11 +13,16 @@ const Live = () => {
         <div className="live-header">
 
           {selectedSource === "NRB" && (
-            <div style={{ marginBottom: "12px", color: "#0f766e", fontWeight: 500 }}>
+            <div className="info" style={{ marginBottom: "12px", color: "#0f766e", fontWeight: 500}}>
               NRB rates update once per day. Automatically fetched.{" "}
               <span style={{ color: "#f84343ff", fontWeight: 500 }}>
                 Use other source for live update (in 30 min each)
               </span>
+            </div>
+          )}
+          {selectedSource === "CurrencyFreaks" && (
+            <div className="info" style={{ marginBottom: "12px", color: "#0f766e", fontWeight: 500 }}>
+              CurrencyFreaks rates update <span style={{ color: "#f84343ff", fontWeight: 500 }}>every 1 hour</span>. Automatically fetched.{" "}
             </div>
           )}
 

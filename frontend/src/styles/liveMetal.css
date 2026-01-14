@@ -1,5 +1,4 @@
 .metal-premium-wrapper {
-  background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%);
   padding: 60px 20px;
   border-radius: 24px;
   margin: 40px auto;
@@ -116,7 +115,6 @@
   gap: 18px;
   padding: 20px 24px;
   border-radius: 14px;
-  background: linear-gradient(145deg, #ffffff, #f8fafc);
   border: 1px solid rgba(226, 232, 240, 0.8);
   transition: all 0.25s ease;
 }
