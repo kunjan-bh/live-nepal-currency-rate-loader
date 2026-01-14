@@ -9,7 +9,7 @@ class CurrencyRate(models.Model):
     fetched_at = models.DateTimeField(default=timezone.now)  # Timestamp of fetch
 
     class Meta:
-        ordering = ['-fetched_at']  # Latest first
+        ordering = ['-fetched_at']  
 
     def __str__(self):
         return f"CurrencyRate fetched at {self.fetched_at}"

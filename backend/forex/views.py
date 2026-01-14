@@ -214,7 +214,7 @@ def fetch_fenegosida_rates(request):
 
     now = timezone.now()
     today = now.date()
-    FETCH_AFTER_HOUR = 12  # 12 PM
+    FETCH_AFTER_HOUR = 11  # 11 AM
 
     print("🔍 FENEGOSIDA API called")
 
@@ -235,9 +235,9 @@ def fetch_fenegosida_rates(request):
             "fetched_at": today_rate.fetched_at,
         })
 
-    # 2️⃣ If before 12 PM → use last available data
+    # 2️⃣ If before 11 AM → use last available data
     if now.hour < FETCH_AFTER_HOUR:
-        print(" Before 12 PM — skipping scrape, using last stored rate")
+        print(" Before 11 AM — skipping scrape, using last stored rate")
         last_saved = LocalMetalRate.objects.first()
         if last_saved:
             return Response({
@@ -251,7 +251,7 @@ def fetch_fenegosida_rates(request):
                 "fetched_at": last_saved.fetched_at,
             })
 
-    # 3️⃣ Try scraping after 12 PM
+    # 3️⃣ Try scraping after 2 PM
     print(" Fetching fresh rates from FENEGOSIDA website...")
 
     try:

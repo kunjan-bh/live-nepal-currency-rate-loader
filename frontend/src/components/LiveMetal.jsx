@@ -3,7 +3,12 @@ import { useEffect, useState } from "react";
 const LiveMetal = () => {
     const [rateType, setRateType] = useState("local");
     const [data, setData] = useState(null);
-
+    const [email, setEmail] = useState(null);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // setEmail(e.target.email.value);
+        console.log(email);
+    }
     useEffect(() => {
         const fetchRates = async () => {
             try {
@@ -128,11 +133,11 @@ const LiveMetal = () => {
             <div className="update">
                 <h1>Live Exchange Rates</h1>
                 <p>Get the recent updated rates and local region rates. <strong>Directly on your mail box.</strong></p>
-                <form action="" className="email-form">
+                <form action="" className="email-form" onSubmit={handleSubmit}>
                     <h2>Want to be updated hourly about the currency exchange rates?</h2>
                     <span>Send us your email</span>
                     <label htmlFor="email">Email</label>
-                    <input type="email" id="email" />
+                    <input type="email" id="email" onChange={(e) => setEmail(e.target.value)}/>
                     <button type="submit">Submit</button>
                 </form>
             </div>
