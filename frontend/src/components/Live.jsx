@@ -5,21 +5,12 @@ import CurrencyFreak from "./CurrencyFreaks";
 const sources = ["CurrencyFreaks", "NRB"];
 
 const Live = () => {
-  const [selectedSource, setSelectedSource] = useState("");
+  const [selectedSource, setSelectedSource] = useState("NRB");
 
   return (
     <section className="live-section" id="Live">
       <div className="container live-container">
         <div className="live-header">
-          <h1>Live Exchange Rates</h1>
-          <p>Rates based on: <strong>{selectedSource}</strong></p>
-          <form action="" className="email-form">
-            <h2>Want to be updated hourly about the currency exchange rates?</h2>
-            <span>Send us your email</span>
-            <label htmlFor="email">Email</label>
-            <input type="email" id="email" />
-            <button type="submit">Submit</button>
-          </form>
 
           {selectedSource === "NRB" && (
             <div style={{ marginBottom: "12px", color: "#0f766e", fontWeight: 500 }}>

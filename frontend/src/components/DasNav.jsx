@@ -11,9 +11,9 @@ const DasNav = () => {
 
                 {/* Right: Navigation */}
                 <ul className="nav-right">
-                    <li><a href="#Live">Live Rates</a></li>
-                    <li><a href="#Gold">Live Gold Rates</a></li>
-                    <li><a href="#Silver">Live Silver Rates</a></li>
+                    <li><a href="#Live">Live Currency Rates</a></li>
+                    <li><a href="#Metal">Live Gold Rates</a></li>
+                    <li><a href="#Metal">Live Silver Rates</a></li>
                     <li><a href="#about">About Us</a></li>
                 </ul>
             </div>

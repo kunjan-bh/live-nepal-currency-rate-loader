@@ -3,7 +3,8 @@
 }
 
 .live-section {
-  background: #f8fafc;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%);
+  border-radius: 24px;
   padding: 80px 0;
 }
 
@@ -22,7 +23,13 @@
   /* gap: 12px; */
   align-items: flex-start;
 }
-
+.live-section p{
+  color: rgb(67, 136, 248);
+  text-align: center;
+}
+.container .live-container{
+  gap: 20px;
+}
 .email-form {
   display: flex;
   flex-direction: column;
@@ -31,7 +38,7 @@
   max-width: 420px;
   align-items: stretch;
   justify-content: center;
-  gap: 5px;
+  gap: 15px;
   color: #0f766e;
   background: #ffffff;
   box-shadow: rgba(99, 99, 99, 0.15) 0px 4px 12px;
@@ -163,7 +170,7 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 20px; /* space between sections inside card */
+  gap: 20px; 
 }
 
 .rate-card:hover {

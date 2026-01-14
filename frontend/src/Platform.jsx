@@ -11,7 +11,7 @@ const Platform = () => {
                 <Hero />
                 <AboutUs />
                 <Live /> 
-                <LiveMetal />   
+                <LiveMetal />  
                 
             </div>
         </div>
