@@ -1,7 +1,16 @@
 from django.contrib import admin
-from .models import CurrencyRate
+from .models import (
+    CurrencyRate,
+    NRBRate,
+    LocalMetalRate,
+    MetalRate,
+    MetalRateTola_v2
+)
 
-@admin.register(CurrencyRate)
-class CurrencyRateAdmin(admin.ModelAdmin):
-    list_display = ('fetched_at',)
-    readonly_fields = ('fetched_at', 'data')
+
+admin.site.register(CurrencyRate)
+admin.site.register(NRBRate)
+admin.site.register(LocalMetalRate)
+admin.site.register(MetalRate)
+admin.site.register(MetalRateTola_v2)
+

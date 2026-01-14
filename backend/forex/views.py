@@ -478,6 +478,7 @@ def get_metal_rate_api(request): #this is og gold-api.com
     last_rate = MetalRateTola_v2.objects.filter(metal=gold_symbol).order_by('-fetched_at').first()
     fetched_fresh = False
     rate = NRBRate.objects.filter(code="USD", date=date).first()
+    print(rate)
     # print(rate)
     try:
         if not last_rate or now - last_rate.fetched_at >= timedelta(hours=1) or last_rate==None:
@@ -486,26 +487,26 @@ def get_metal_rate_api(request): #this is og gold-api.com
             data1 = res.json()
             data2 = res2.json()
             data_oz = {
-                "gold/oz": data1["price"],
-                "silver/oz": data2["price"],
+                "gold_oz": data1["price"],
+                "silver_oz": data2["price"],
                 "date": date
             }
             data_tola = {
-                "gold/tola": round((data1["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
-                "silver/tola": round((data2["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
+                "gold_tola": round((data1["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
+                "silver_tola": round((data2["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
                 "date": date
             }
             MetalRateTola_v2.objects.update_or_create(
                 metal=gold_symbol,
                 defaults={
-                    "price_tola_npr": data_tola["gold/tola"],
+                    "price_tola_npr": data_tola["gold_tola"],
                     "fetched_at": date
                 }
             )
             MetalRateTola_v2.objects.update_or_create(
                 metal=silver_symbol,
                 defaults={
-                    "price_tola_npr": data_tola["silver/tola"],
+                    "price_tola_npr": data_tola["silver_tola"],
                     "fetched_at": date
                 }
             ) 
@@ -516,8 +517,8 @@ def get_metal_rate_api(request): #this is og gold-api.com
             if not gold_last_price or not silver_last_price:
                 return Response({"error": "No cached metal rate found"}, status=404)
             data_tola = {
-                "gold/tola": gold_last_price.price_tola_npr,
-                "silver/tola": silver_last_price.price_tola_npr,
+                "gold_tola": gold_last_price.price_tola_npr,
+                "silver_tola": silver_last_price.price_tola_npr,
                 "date": date
             }
             return Response(data_tola)
