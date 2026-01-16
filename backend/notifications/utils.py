@@ -12,8 +12,8 @@ from .models import RateNotificationLog
 
 def send_rate_update_email(subject, message):
     recipients = list(
-        User.objects.filter(is_subscribed=True)
-        .values_list("email", flat=True)
+        User.objects.all()
+        .values_list("email", flat=True)#may use filter for only subscribed users
     )
 
     if not recipients:
@@ -35,6 +35,7 @@ def notify_if_changed(source, data, email_subject, email_body):
     source: unique name (NRB, METAL, etc.)
     data: python dict/list of rates
     """
+    print("notify_if_changed called for*****************", source)
     serialized = json.dumps(data, sort_keys=True)
     data_hash = hashlib.md5(serialized.encode()).hexdigest()
 

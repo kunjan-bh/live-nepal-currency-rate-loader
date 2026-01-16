@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'forex',
     'users',
     'notifications',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -76,6 +77,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+CRONJOBS = [
+    ("0 * * * *", "forex.cron.fetch_currencyfreaks_job"),  
+    ("0 11 * * *", "forex.cron.fetch_nrb_job"),            
+    ("0 12 * * *", "metals.cron.fetch_metal_rates_job"),  
+]
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases

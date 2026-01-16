@@ -66,9 +66,8 @@ const LiveMetal = () => {
         };
 
         fetchRates();
-        // Optional: refresh every ~5–15 min for live sources
-        // const interval = setInterval(fetchRates, 8 * 60 * 1000);
-        // return () => clearInterval(interval);
+        const interval = setInterval(fetchRates, 8 * 60 * 1000);
+        return () => clearInterval(interval);
     }, [rateType]);
 
     const today = new Date().toLocaleDateString("en-GB", {
