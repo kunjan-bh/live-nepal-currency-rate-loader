@@ -12,6 +12,7 @@ import re
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.conf import settings
+from django.utils.timezone import localtime
 
 
 NRB_API_URL = "https://www.nrb.org.np/api/forex/v1/rate"
@@ -212,9 +213,10 @@ def fetch_fenegosida_rates(request):
                       "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
 
-    now = timezone.now()
+    now = localtime()
+    print(now)
     today = now.date()
-    FETCH_AFTER_HOUR = 11  # 11 AM
+    FETCH_AFTER_HOUR = 12  # 12 PM
 
     print("🔍 FENEGOSIDA API called")
 
@@ -235,9 +237,9 @@ def fetch_fenegosida_rates(request):
             "fetched_at": today_rate.fetched_at,
         })
 
-    # 2️⃣ If before 11 AM → use last available data
+    # 2️⃣ If before 12 PM → use last available data
     if now.hour < FETCH_AFTER_HOUR:
-        print(" Before 11 AM — skipping scrape, using last stored rate")
+        print(" Before 12 PM — skipping scrape, using last stored rate")
         last_saved = LocalMetalRate.objects.first()
         if last_saved:
             return Response({
