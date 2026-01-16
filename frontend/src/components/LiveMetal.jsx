@@ -4,10 +4,24 @@ const LiveMetal = () => {
     const [rateType, setRateType] = useState("local");
     const [data, setData] = useState(null);
     const [email, setEmail] = useState(null);
-    const handleSubmit = (e) => {
+    const [success, setSuccess] = useState(false);
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // setEmail(e.target.email.value);
-        console.log(email);
+        try {
+            const res = await fetch("http://127.0.0.1:8000/subscribe/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json", // important!
+                },
+                body: JSON.stringify({ email }),
+            });
+            const json = await res.json();
+            console.log("json", json);
+            setSuccess(true);
+        } catch (err) {
+            console.error("err", err);
+        }
     }
     useEffect(() => {
         const fetchRates = async () => {
@@ -136,8 +150,9 @@ const LiveMetal = () => {
                 <form action="" className="email-form" onSubmit={handleSubmit}>
                     <h2>Want to be updated hourly about the currency exchange rates?</h2>
                     <span>Send us your email</span>
+                    {success ? <p className="success">Thank you for your subscription!</p> : <p className="error">Something went wrong!</p>}
                     <label htmlFor="email">Email</label>
-                    <input type="email" id="email" onChange={(e) => setEmail(e.target.value)}/>
+                    <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                     <button type="submit">Submit</button>
                 </form>
             </div>

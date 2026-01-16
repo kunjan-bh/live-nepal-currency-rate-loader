@@ -71,3 +71,6 @@ class MetalRateTola_v2(models.Model):# to save of the (gold-api.com)
     
     def __str__(self):
         return f"{self.metal} - {self.price_tola_npr} {self.currency} per gram at {self.fetched_at}"
+
+# forex/models.py
+

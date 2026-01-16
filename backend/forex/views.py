@@ -13,6 +13,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.conf import settings
 from django.utils.timezone import localtime
+from notifications.utils import notify_if_changed
+
 
 
 NRB_API_URL = "https://www.nrb.org.np/api/forex/v1/rate"
@@ -51,7 +53,8 @@ def nrb_rates(request):
         res.raise_for_status()
         res_json = res.json()
         payload = res_json.get("data", {}).get("payload")
-        published_date = payload.get("date") or today_str
+        published_date_str = payload.get("date") or today_str
+        published_date = datetime.strptime(published_date_str, "%Y-%m-%d").date()
         rates_list = payload.get("rates", [])
 
         if payload and rates_list:
@@ -63,7 +66,8 @@ def nrb_rates(request):
                     "unit": cur["currency"]["unit"],
                     "buy": float(cur["buy"]),
                     "sell": float(cur["sell"]),
-                    "date": published_date,
+                    "date": published_date.isoformat()
+,
                 }
                 for cur in rates_list
                 if cur["currency"]["iso3"] in CURRENCIES
@@ -80,6 +84,12 @@ def nrb_rates(request):
                         "sell": rate["sell"]
                     }
                 )
+            notify_if_changed(
+                source="NRB_FOREX",
+                data=filtered,
+                email_subject="📢 NRB Forex Rate Updated",
+                email_body="NRB has published new forex rates. Visit the app to view details."
+            )
 
             return Response({"success": True, "last_updated": filtered[0]["date"], "rates": filtered, "cached": False})
 
@@ -109,6 +119,8 @@ def nrb_rates(request):
             }
             for rate in last_saved
         ]
+
+
         return Response({"success": True, "last_updated": filtered[0]["date"], "rates": filtered, "cached": True})
 
 
@@ -176,6 +188,13 @@ def currencyfreaks_rates(request):
                 })
 
         CurrencyRate.objects.create(data=filtered_rates)
+        notify_if_changed(
+            source="CURRENCY_FREAKS",
+            data=filtered_rates,
+            email_subject="💱 Currency Rates Updated",
+            email_body="Live currency exchange rates have changed."
+        )
+
         print("Successfully fetched and saved new CurrencyFreaks rates.")
 
         return Response({
@@ -221,9 +240,8 @@ def fetch_fenegosida_rates(request):
     print("🔍 FENEGOSIDA API called")
 
     # 1️⃣ Check if today's rate already exists
-    today_rate = LocalMetalRate.objects.filter(
-        fetched_at__date=today
-    ).first()
+    today_rate = LocalMetalRate.objects.filter(date=today).first()
+
 
     if today_rate:
         print("✅ Using cached local metal rate for today")
@@ -314,6 +332,17 @@ def fetch_fenegosida_rates(request):
             tejabi_gold=tejabi_gold or 0,
             silver=silver,
         )
+        notify_if_changed(
+            source="LOCAL_METAL",
+            data={
+                "fine_gold": saved.fine_gold,
+                "tejabi_gold": saved.tejabi_gold,
+                "silver": saved.silver,
+            },
+            email_subject="🪙 Local Gold & Silver Rates Updated",
+            email_body="Fenegosida has updated today's metal prices."
+        )
+
 
         print(" Successfully scraped and saved new local metal rate")
 
@@ -370,6 +399,8 @@ def get_latest_usd_npr_rate(now=None):
             print(f"Latest USD rate too old ({age_days} days): {latest.date}")
     else:
         print("No USD rate found in NRBRate table!")
+    return None
+
 
 # metals/views.py
 
@@ -479,8 +510,14 @@ def get_metal_rate_api(request): #this is og gold-api.com
     silver_symbol = "XAG"
     last_rate = MetalRateTola_v2.objects.filter(metal=gold_symbol).order_by('-fetched_at').first()
     fetched_fresh = False
-    rate = NRBRate.objects.filter(code="USD", date=date).first()
+    today = timezone.now().date()
+    rate = NRBRate.objects.filter(code="USD", date=today).first()
     print(rate)
+    if not rate:
+        return Response(
+            {"error": "USD/NPR rate not available"},
+            status=503
+        )
     # print(rate)
     try:
         if not last_rate or now - last_rate.fetched_at >= timedelta(hours=1) or last_rate==None:
@@ -491,12 +528,12 @@ def get_metal_rate_api(request): #this is og gold-api.com
             data_oz = {
                 "gold_oz": data1["price"],
                 "silver_oz": data2["price"],
-                "date": date
+                "date": date.isoformat()
             }
             data_tola = {
                 "gold_tola": round((data1["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
                 "silver_tola": round((data2["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
-                "date": date
+                "date": date.isoformat()
             }
             MetalRateTola_v2.objects.update_or_create(
                 metal=gold_symbol,
@@ -512,6 +549,13 @@ def get_metal_rate_api(request): #this is og gold-api.com
                     "fetched_at": date
                 }
             ) 
+            notify_if_changed(
+                source="GOLD_API",
+                data= data_tola,
+                email_subject="🥇 International Gold/Silver Price Changed",
+                email_body="Gold or Silver international rates have changed."
+            )
+
             return Response(data_tola)
         else:
             silver_last_price = MetalRateTola_v2.objects.filter(metal=silver_symbol).order_by('-fetched_at').first()
