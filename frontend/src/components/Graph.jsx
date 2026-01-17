@@ -10,6 +10,7 @@ import {
     ResponsiveContainer,
     Legend,
 } from "recharts";
+import { Brush } from "recharts";
 const Graph = () => {
     const [data, setData] = useState([]);
     const [selectedMetal, setSelectedMetal] = useState("Gold");
@@ -31,7 +32,7 @@ const Graph = () => {
             <h2>Graph</h2>
             <div className="metal-graph">
                 <div className="graph-fenegosida">
-                    <h3>Fenegosida</h3>
+                    <h3>Fenegosida(Daily Nepal Rate)</h3>
                     <div className="metal_option">
                         <button className="gold-btn" onClick={() => setSelectedMetal("Gold")}>Gold</button>
                         <button className="silver-btn" onClick={() => setSelectedMetal("Silver")}>Silver</button>
@@ -41,9 +42,10 @@ const Graph = () => {
                             <h3>Gold Price (Fine Gold)</h3>
                             <ResponsiveContainer width="100%" height={300}>
                                 <LineChart data={data}>
+                                    <Brush dataKey="date" height={20} stroke="#8884d8" />
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="date" />
-                                    <YAxis />
+                                    <YAxis domain={['dataMin - 5000', 'dataMax + 5000']} tickCount={6} />
                                     <Tooltip />
                                     <Line
                                         type="monotone"
@@ -60,9 +62,10 @@ const Graph = () => {
                             <h3>Silver Price</h3>
                             <ResponsiveContainer width="100%" height={300}>
                                 <LineChart data={data}>
+                                    <Brush dataKey="date" height={20} stroke="#8884d8" />
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="date" />
-                                    <YAxis />
+                                    <YAxis domain={['dataMin - 500', 'dataMax + 500']} tickCount={6} />
                                     <Tooltip />
                                     <Line
                                         type="monotone"
