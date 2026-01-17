@@ -20,7 +20,7 @@ const Graph = () => {
         const fetchGraphData = async () => {
             try {
                 const response = await axios.get("http://localhost:8000/local_metal_graph_data/");
-                
+
                 const data = response.data;
                 setData(data);
                 console.log(data);
@@ -37,7 +37,13 @@ const Graph = () => {
             }
         };
         fetchGraphData();
+
+        
+        const interval = setInterval(fetchGraphData, 30 * 60 * 1000);
+
+        return () => clearInterval(interval);
     }, []);
+
     return (
         <div className="graph-container">
             <h2>Graph</h2>

@@ -82,6 +82,8 @@ CRONJOBS = [
     ("0 11 * * *", "forex.cron.fetch_nrb_job"),            
     ("0 12 * * *", "metals.cron.fetch_metal_rates_job"),  
 ]
+CRONTAB_COMMAND_PREFIX = 'source /home/kunjan/projects/Trading-live-nepali-rate/venv/bin/activate &&'
+
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases

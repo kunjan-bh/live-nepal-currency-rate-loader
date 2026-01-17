@@ -593,7 +593,7 @@ def Globalmetalrate_graph(request):#every hr updates
     grouped = defaultdict(dict)
     for rate in metalrate:
         local_dt = localtime(rate.fetched_at)
-        ts = local_dt.strftime("%Y-%m-%d %H:00")
+        ts = local_dt.strftime("%Y-%m-%d %H:%M")
 
         if rate.metal == "XAU":
             grouped[ts]["gold"] = int(rate.price_tola_npr)
