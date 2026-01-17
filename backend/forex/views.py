@@ -233,14 +233,17 @@ def fetch_fenegosida_rates(request):
     }
 
     now = localtime()
-    print(now)
+    # print(now)
     today = now.date()
+    print("today",today)
     FETCH_AFTER_HOUR = 12  # 12 PM
 
     print("🔍 FENEGOSIDA API called")
 
     # 1️⃣ Check if today's rate already exists
     today_rate = LocalMetalRate.objects.filter(date=today).first()
+    # today_rate = LocalMetalRate.objects.filter(fetched_at__date=today).order_by('-fetched_at').first()
+
 
 
     if today_rate:
@@ -327,7 +330,7 @@ def fetch_fenegosida_rates(request):
 
         
         saved = LocalMetalRate.objects.create(
-            date=date,
+            date=today,
             fine_gold=fine_gold,
             tejabi_gold=tejabi_gold or 0,
             silver=silver,
@@ -573,3 +576,12 @@ def get_metal_rate_api(request): #this is og gold-api.com
         return Response({"error": str(e)}, status=500)
     
     return Response({"error": "No metal rate found"}, status=404)
+
+@api_view(['GET'])
+def localmetalrate_graph(request):
+    metalrate = LocalMetalRate.objects.all().values('date','fine_gold','silver')
+    if not metalrate:
+        return Response({"error": "No metal rate found"}, status=404)
+    
+    return Response(metalrate.values().order_by('date'))
+    

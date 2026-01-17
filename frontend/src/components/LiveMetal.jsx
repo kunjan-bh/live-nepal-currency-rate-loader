@@ -109,7 +109,7 @@ const LiveMetal = () => {
                             <span className="update-info">
                                 {rateType === "local"
                                     ? "Official daily update — Federation of Nepal"
-                                    : "Real-time • updates ~every 8 hours"}
+                                    : (rateType === "live1" ? "Real-time • updates ~every 8 hours" : "Real-time • updates ~every 1 hours")}
                             </span>
                         </div>
 

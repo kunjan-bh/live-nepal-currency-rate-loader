@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from forex.views import nrb_rates, currencyfreaks_rates, fetch_fenegosida_rates, get_metal_rates, get_metal_rate_api
+from forex.views import nrb_rates, currencyfreaks_rates, fetch_fenegosida_rates, get_metal_rates, get_metal_rate_api, localmetalrate_graph
 from users.views import subscribe
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +26,5 @@ urlpatterns = [
     path('metal_rates/', get_metal_rates),
     path("metal_rates_v2/", get_metal_rate_api),
     path('subscribe/', subscribe),
+    path("local_metal_graph_data/", localmetalrate_graph),
 ]

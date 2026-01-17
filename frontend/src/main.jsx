@@ -7,6 +7,7 @@ import './styles/platform.css'
 import './styles/hero.css'
 import './styles/live.css'
 import './styles/liveMetal.css'
+import './styles/graph.css'
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <App />

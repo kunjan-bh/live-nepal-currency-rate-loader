@@ -1,0 +1,65 @@
+.graph-container {
+    color: #000000;
+    max-width: 1200px;
+    margin-bottom: 2rem;
+}
+.metal-graph {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+.graph-container h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+.graph-fenegosida h3, .graph-nrb h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+.graph-fenegosida {
+    max-width: 50%;
+    min-height: 400px;
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+.metal_option {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    /* justify-content: space-between; */
+    gap: 20px;
+}  
+.metal_option button {
+    padding: 10px 20px;
+    border: none;
+    /* background-color: #d4af37; */
+    border-radius: 5px;
+    cursor: pointer;
+}
+.metal_option .gold-btn:hover {
+    background-color: #d4af37;
+} 
+.metal_option .silver-btn:hover {
+    background-color: #696861;
+    color: #ffffff;
+}
+.metal_option .gold-btn {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #e7c52c;
+}
+.metal_option .silver-btn {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #696861;
+}
+.graph-nrb {
+    max-width: 50%;
+    min-height: 400px;
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
