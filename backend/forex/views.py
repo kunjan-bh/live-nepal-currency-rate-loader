@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from django.conf import settings
 from django.utils.timezone import localtime
 from notifications.utils import notify_if_changed
+from collections import defaultdict
 
 
 
@@ -507,13 +508,15 @@ metal_api_base_url_v2 = "https://api.gold-api.com"
 
 @api_view(['GET'])
 def get_metal_rate_api(request): #this is og gold-api.com
-    date = timezone.now()
+    date = localtime()
     now = timezone.now()
     gold_symbol = "XAU"
     silver_symbol = "XAG"
     last_rate = MetalRateTola_v2.objects.filter(metal=gold_symbol).order_by('-fetched_at').first()
     fetched_fresh = False
-    today = timezone.now().date()
+    now = localtime()
+    # print(now)
+    today = now.date()
     rate = NRBRate.objects.filter(code="USD", date=today).first()
     print(rate)
     if not rate:
@@ -531,26 +534,22 @@ def get_metal_rate_api(request): #this is og gold-api.com
             data_oz = {
                 "gold_oz": data1["price"],
                 "silver_oz": data2["price"],
-                "date": date.isoformat()
+                "date": localtime(date).isoformat()
             }
             data_tola = {
                 "gold_tola": round((data1["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
                 "silver_tola": round((data2["price"]/OZ_TO_GRAMS * TOLA_GRAMS)*rate.sell,2),
-                "date": date.isoformat()
+                "date": localtime(date).isoformat()
             }
-            MetalRateTola_v2.objects.update_or_create(
+            MetalRateTola_v2.objects.create(
                 metal=gold_symbol,
-                defaults={
-                    "price_tola_npr": data_tola["gold_tola"],
-                    "fetched_at": date
-                }
+                price_tola_npr=data_tola["gold_tola"],
+                fetched_at=date
             )
-            MetalRateTola_v2.objects.update_or_create(
+            MetalRateTola_v2.objects.create(
                 metal=silver_symbol,
-                defaults={
-                    "price_tola_npr": data_tola["silver_tola"],
-                    "fetched_at": date
-                }
+                price_tola_npr=data_tola["silver_tola"],
+                fetched_at=date
             ) 
             notify_if_changed(
                 source="GOLD_API",
@@ -568,7 +567,7 @@ def get_metal_rate_api(request): #this is og gold-api.com
             data_tola = {
                 "gold_tola": gold_last_price.price_tola_npr,
                 "silver_tola": silver_last_price.price_tola_npr,
-                "date": gold_last_price.fetched_at
+                "date": localtime(gold_last_price.fetched_at).isoformat()
             }
             return Response(data_tola)
     except Exception as e:
@@ -584,4 +583,28 @@ def localmetalrate_graph(request):
         return Response({"error": "No metal rate found"}, status=404)
     
     return Response(metalrate.values().order_by('date'))
+
+@api_view(['GET'])
+def Globalmetalrate_graph(request):#every hr updates
+    metalrate = MetalRateTola_v2.objects.all()
+    if not metalrate.exists():
+        return Response({"error": "No metal rate found"}, status=404)
+    
+    grouped = defaultdict(dict)
+    for rate in metalrate:
+        local_dt = localtime(rate.fetched_at)
+        ts = local_dt.strftime("%Y-%m-%d %H:00")
+
+        if rate.metal == "XAU":
+            grouped[ts]["gold"] = int(rate.price_tola_npr)
+        elif rate.metal == "XAG":
+            grouped[ts]["silver"] = int(rate.price_tola_npr)
+
+        grouped[ts]["fetched_at"] = ts
+
+    # convert dict → list
+    data = list(grouped.values())
+
+    return Response(data)
+
     

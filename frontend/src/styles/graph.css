@@ -13,7 +13,7 @@
     margin-bottom: 1rem;
     text-align: center;
 }
-.graph-fenegosida h3, .graph-nrb h3 {
+.graph-fenegosida h3, .graph-live-gold h3 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     text-align: center;
@@ -56,10 +56,11 @@
     color: #000000;
     border: 1px solid #696861;
 }
-.graph-nrb {
+.graph-live-gold {
     max-width: 50%;
     min-height: 400px;
     width: 100%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
 }
 

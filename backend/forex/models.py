@@ -64,10 +64,10 @@ class MetalRateTola_v2(models.Model):# to save of the (gold-api.com)
         ('XAG', 'Silver'),
     ]
     
-    metal = models.CharField(max_length=3, choices=METAL_CHOICES)
+    metal = models.CharField(max_length=3, choices=METAL_CHOICES, default='XAU')
     currency = models.CharField(max_length=3, default='USD')
-    price_tola_npr = models.FloatField()  # Updated to store gram price in USD
-    fetched_at = models.DateTimeField(auto_now_add=True)
+    price_tola_npr = models.FloatField(default=0)  # Updated to store gram price in USD
+    fetched_at = models.DateTimeField()
     
     def __str__(self):
         return f"{self.metal} - {self.price_tola_npr} {self.currency} per gram at {self.fetched_at}"
