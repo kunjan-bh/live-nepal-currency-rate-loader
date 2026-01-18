@@ -51,8 +51,8 @@ const Graph = () => {
                 <div className="graph-fenegosida">
                     <h3>Fenegosida(Daily Nepal Rate)</h3>
                     <div className="metal_option">
-                        <button className="gold-btn" onClick={() => setSelectedLocalMetal("Gold")}>Gold</button>
-                        <button className="silver-btn" onClick={() => setSelectedLocalMetal("Silver")}>Silver</button>
+                        <button className={selectedLocalMetal === "Gold" ? "gold-btn active" : "gold-btn"} onClick={() => setSelectedLocalMetal("Gold")}>Gold</button>
+                        <button className={selectedLocalMetal === "Silver" ? "silver-btn active" : "silver-btn"} onClick={() => setSelectedLocalMetal("Silver")}>Silver</button>
                     </div>
                     {selectedLocalMetal === "Gold" && (
                         <div className="graph-card">
@@ -98,8 +98,8 @@ const Graph = () => {
                 <div className="graph-live-gold">
                     <h3>Live Gold(every 1 hour)</h3>
                     <div className="metal_option">
-                        <button className="gold-btn" onClick={() => setSelectedLiveMetal("Gold")}>Gold</button>
-                        <button className="silver-btn" onClick={() => setSelectedLiveMetal("Silver")}>Silver</button>
+                        <button className={selectedLiveMetal === "Gold" ? "gold-btn active" : "gold-btn"} onClick={() => setSelectedLiveMetal("Gold")}>Gold</button>
+                        <button className={selectedLiveMetal === "Silver" ? "silver-btn active" : "silver-btn"} onClick={() => setSelectedLiveMetal("Silver")}>Silver</button>
                     </div>
                     {selectedLiveMetal === "Gold" && (
                         <div className="graph-card">

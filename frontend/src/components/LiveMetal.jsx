@@ -4,7 +4,7 @@ const LiveMetal = () => {
     const [rateType, setRateType] = useState("local");
     const [data, setData] = useState(null);
     const [email, setEmail] = useState(null);
-    const [success, setSuccess] = useState(false);
+    const [success, setSuccess] = useState("");
     const handleSubmit = async (e) => {
         e.preventDefault();
         // setEmail(e.target.email.value);
@@ -149,7 +149,7 @@ const LiveMetal = () => {
                 <form action="" className="email-form" onSubmit={handleSubmit}>
                     <h2>Want to be updated hourly about the currency exchange rates?</h2>
                     <span>Send us your email</span>
-                    {success ? <p className="success">Thank you for your subscription!</p> : <p className="error">Something went wrong!</p>}
+                    {success ? <p className="success">Thank you for your subscription!</p> : success && <p className="error">Something went wrong!</p>}
                     <label htmlFor="email">Email</label>
                     <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                     <button type="submit">Submit</button>

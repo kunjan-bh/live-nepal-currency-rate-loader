@@ -63,4 +63,13 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 1rem;
 }
+.gold-btn.active {
+    background-color: #d4af37;
+}
+.silver-btn.active {
+    background-color: #696861;
+    color: #ffffff;
+}
+    
+
 
