@@ -5,11 +5,13 @@ const LiveMetal = () => {
     const [data, setData] = useState(null);
     const [email, setEmail] = useState(null);
     const [success, setSuccess] = useState("");
+    const API_URL = "http://localhost:8000";
+    // const API_URL = "http://0dcb6ebd3574.ngrok-free.app";
     const handleSubmit = async (e) => {
         e.preventDefault();
         // setEmail(e.target.email.value);
         try {
-            const res = await fetch("http://127.0.0.1:8000/subscribe/", {
+            const res = await fetch(`${API_URL}/subscribe/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json", // important!
@@ -27,9 +29,9 @@ const LiveMetal = () => {
         const fetchRates = async () => {
             try {
                 let url;
-                if (rateType === "local") url = "http://127.0.0.1:8000/local_metal_rate/";
-                else if (rateType === "live1") url = "http://127.0.0.1:8000/metal_rates/";
-                else if (rateType === "live2") url = "http://127.0.0.1:8000/metal_rates_v2/";
+                if (rateType === "local") url = `${API_URL}/local_metal_rate/`;
+                else if (rateType === "live1") url = `${API_URL}/metal_rates/`;
+                else if (rateType === "live2") url = `${API_URL}/metal_rates_v2/`;
 
                 const res = await fetch(url);
                 const json = await res.json();

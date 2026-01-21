@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 const API_URL = "http://localhost:8000";
+// const API_URL = "http://0dcb6ebd3574.ngrok-free.app";
 
 const currencies = [
   { code: "USD", name: "US Dollar", flag: "🇺🇸" },

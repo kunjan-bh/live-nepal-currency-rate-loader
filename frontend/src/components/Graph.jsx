@@ -11,6 +11,8 @@ import {
     Legend,
 } from "recharts";
 import { Brush } from "recharts";
+const API_URL = "http://localhost:8000";
+// const API_URL = "http://0dcb6ebd3574.ngrok-free.app";
 const Graph = () => {
     const [data, setData] = useState([]);
     const [globalData, setGlobalData] = useState([]);
@@ -19,7 +21,7 @@ const Graph = () => {
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/local_metal_graph_data/");
+                const response = await axios.get(`${API_URL}/local_metal_graph_data/`);
 
                 const data = response.data;
                 setData(data);
@@ -28,7 +30,7 @@ const Graph = () => {
                 console.error("Error fetching Local graph data:", error);
             }
             try {
-                const response = await axios.get("http://localhost:8000/global_metal_graph_data/");
+                const response = await axios.get(`${API_URL}/global_metal_graph_data/`);
                 const data = response.data;
                 setGlobalData(data);
                 console.log(data);
