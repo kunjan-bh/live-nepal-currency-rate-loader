@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 
 const API_URL = "http://localhost:8000";
-// const API_URL = "http://0dcb6ebd3574.ngrok-free.app";
 
+// const API_URL = "http://0dcb6ebd3574.ngrok-free.app";
 const currencies = [
   { code: "USD", name: "US Dollar", flag: "🇺🇸" },
   { code: "EUR", name: "Euro", flag: "🇪🇺" },
@@ -13,7 +13,6 @@ const currencies = [
   { code: "CNY", name: "Chinese Yuan", flag: "🇨🇳" },
   { code: "INR", name: "Indian Rupee", flag: "🇮🇳" },
 ];
-
 const ONE_HOUR = 60 * 60 * 1000;
 
 const CurrencyFreak = () => {
